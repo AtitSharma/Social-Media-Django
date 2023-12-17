@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {{posts}}
+
+
+
+<button onclick="displayform()"> Create A Post </button>
+
+<form id="add-post-form" method="post">
+    <label for="description"> Enter the post </label>
+    <input type="text" name="description" placeholder="What is in your mind ? ">
+    <input type="submit" value="Add Post" onclick="addpostview()">
+</form>
+
+
+<!-- <button onclick="addpostview()"></button> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    $("#add-post-form").hide()
+
+    function addpostview(){
+        event.preventDefault()
+        var formdata=$("#add-post-form").serializeArray();
+        console.log(formdata)
+        var jsondata={};
+        for(var i =0;i<formdata.length;i++){
+              var item= formdata[i];
+              jsondata[item.name]=item.value;
+            }
+        const createPostUrl = "{% url 'post:create' %}";
+        var jsonDataStr = JSON.stringify(jsondata);
+        console.log(createPostUrl);
+        $.ajax({
+            url :createPostUrl,
+            type :"POST",
+            data: jsonDataStr,
+            contentType:"application/json",
+            headers :{ 
+                'X-CSRFToken':getCSRFToken(),
+
+              },
+            success: function(response){
+                console.log(response)
+            }
+        })
+
+        
+    }
+
+
+    function getCSRFToken() {
+            var cookieValue = null;
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+              var cookie = cookies[i].trim();
+              if (cookie.startsWith('csrftoken=')) {
+                cookieValue = cookie.substring('csrftoken='.length, cookie.length);
+                break;
+              }
+            }
+            return cookieValue;
+    }
+
+
+    function  displayform(){
+        $("#add-post-form").show()
+    }
+
+
+</script>
+
+
+
+{% endblock content %}
+

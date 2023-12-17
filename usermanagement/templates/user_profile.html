@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+{% if posts %}
+    {% for post  in posts %}
+        Created at : {{post.post.created_at}}<br>
+        Updated at : {{post.post.updated_at}}<br>
+        Description : {{post.post.description}}<br>
+        Likes : {{post.post.get_likes}}
+        {% if post.images %}
+            {% for image in post.images %}
+                <img src="{{image}}" height="100px">
+            {% endfor %}
+        {% endif %}
+        <button  onclick="getAllComments({{post.post.id}})">Get All Comments </button>
+        
+    {% endfor %}
+   
+    <br>
+{% endif %}
+
+<script>
+    function getAllComments(id){
+        const getAllCommentsUrl ="{% url 'post:get-all-comments' 0 %}".replace('0',id);
+        $.ajax({
+            url : getAllCommentsUrl,
+            type : "GET",
+            contentType:"application/json",
+            success: function(response){
+                console.log(response)
+            },
+        })
+
+    }
+</script>
+
+
+{% endblock content %}
