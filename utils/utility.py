@@ -3,7 +3,9 @@ from django.core.mail import send_mail
 import random
 from utils.models import OTP
 from usermanagement.models import User
-from post.models import Post,SharedPost,PostImages
+from post.models import PostImages
+from django.http import Http404
+
 FROM_USER = settings.EMAIL_HOST_USER
 
 def send_email_to_verify_user(id):
@@ -45,11 +47,10 @@ def format_shared_posts_with_image(shared_posts):
     return images
                          
             
+def get_or_not_found(qs, **kwargs):
+    try:
+        return qs.get(**kwargs)
+    except qs.model.DoesNotExist:
+        # raise exceptions.NotFound(f"{qs.model.__name__} instance not found.")
+        raise Http404
 
-        
-        
-
-        # images_dict["shared_post"]=shared_post.post
-        # images_dict["image"] = list(map(lambda x : shared_post.post.image.all()))
-
-    # pass

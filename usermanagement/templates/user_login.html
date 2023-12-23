@@ -1,4 +1,5 @@
-<form method="POST">
+{% load static %}
+<!-- <form method="POST">
     {% csrf_token %}
     {{ form.as_p }}
 
@@ -11,4 +12,58 @@
     {% endif %}
 
     <input type="submit" value="Submit">
-</form>
+</form> -->
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Log In</title>
+    <link
+      rel="stylesheet"
+      href="https://unicons.iconscout.com/release/v4.0.8/css/line.css"
+    />
+   <link rel="stylesheet" href="{% static 'css/bs_icon.css' %}">
+  </head>
+  <body>
+    <div class="container">
+      <div class="forms">
+        <div class="form_login">
+          <span class="Title">Login</span>
+          <form action="#" method="post">
+            {% csrf_token %}
+            <div class="input_box">
+              <input type="email" name="email" placeholder="Enter your email" required>
+              <i class="uil uil-envelope-alt"></i>
+            </div>
+            <div class="input_box">
+              <input type="password" name="password" placeholder="Enter your password" required>
+              <i class="uil uil-padlock icon"></i>
+              <i class="uil uil-eye-slash flash"></i>
+              
+            </div>
+            <div class="check_box">
+              <div class="check">
+                <input type="checkbox" required>
+                <label for="#">Stay logged in</label>
+              </div>
+              <a href="#">Forgot password?</a>
+            </div>
+            <div class="inbox_button">
+              <input type="submit" value="Login" required>
+            </div>
+          </form>
+          <div class="Register_box">
+            <span class="reg">Haven't registered?
+             <a href="#"class="Register">register now.</a>
+            </span>
+           </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

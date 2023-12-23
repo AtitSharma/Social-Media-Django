@@ -9,13 +9,11 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -25,7 +23,7 @@ SECRET_KEY = 'django-insecure-ad9@e9+r8=ub-3ld_=q@d(ng61=uw^lz2*+jm4j-6k#p73^#i5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -132,8 +130,7 @@ AUTH_USER_MODEL = "usermanagement.User"
 
 MEDIA_URL ="media/"
 
-MEDIA_ROOT = BASE_DIR/"media"
-
+MEDIA_ROOT = BASE_DIR/"mediafiles/"
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS=[

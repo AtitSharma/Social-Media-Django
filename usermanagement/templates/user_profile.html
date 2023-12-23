@@ -1,37 +1,68 @@
 {% extends 'base.html' %}
 {% block content %}
-{% if posts %}
-    {% for post  in posts %}
-        Created at : {{post.post.created_at}}<br>
-        Updated at : {{post.post.updated_at}}<br>
-        Description : {{post.post.description}}<br>
-        Likes : {{post.post.get_likes}}
-        {% if post.images %}
-            {% for image in post.images %}
-                <img src="{{image}}" height="100px">
-            {% endfor %}
-        {% endif %}
-        <button  onclick="getAllComments({{post.post.id}})">Get All Comments </button>
-        
+{% for post in posts %}
+   ********************************
+   <br>
+   Description : {{post.description}} <br>
+   Username : {{post.username}} <br>
+   Likes : <span id="like{{post.id}}">{{post.likes}} </span> 
+    <a href="" onclick="likethePost({{post.id}})"> Like </a> <br>
+    {% for image in post.images %}
+        <img src="{{ image }}" height="200px">
     {% endfor %}
-   
+{% endfor %}
+
+<br>
+{% for shared_post in shared_posts%}
+        <br>
+    ********************
     <br>
-{% endif %}
+    Username of Yours : {{shared_post.user}} <br>
+    {% if shared_post.description %}
+    Description: {{shared_post.description}}<br>
+    {% endif %}
+    {% for post in shared_post.post %}
+        Description : {{post.description}} <br>
+        Post User : {{post.username}} <br>
+    {% endfor %}
+    Shared Post Likes : <span id="shared_post_like{{shared_post.id}}">{{shared_post.likes}} </span> 
+    <a href="" onclick="LikeTheSharedPost({{shared_post.id}})"> Like </a> <br>
+    ********************
+    {% endfor %}
+
+<br>
+********************
+<br>
 
 <script>
-    function getAllComments(id){
-        const getAllCommentsUrl ="{% url 'post:get-all-comments' 0 %}".replace('0',id);
+
+    function likethePost(id){
+        event.preventDefault();
+        url = "{% url 'post:like-dislike-posts' 0 %}".replace(0,id),
         $.ajax({
-            url : getAllCommentsUrl,
+            url : url,
             type : "GET",
             contentType:"application/json",
-            success: function(response){
-                console.log(response)
-            },
+            success : function(response){
+                document.getElementById(`like${id}`).innerHTML = response.message
+            }
+        })
+    }
+
+    function LikeTheSharedPost(id){
+        event.preventDefault();
+        url = "{% url 'post:like-dislike-shared-posts' 0 %}".replace("0",id)
+        $.ajax({
+            url : url,
+            type : "GET",
+            contentType:"application/json",
+            success : function(response){
+                document.getElementById(`shared_post_like${id}`).innerHTML = response.message
+            }
         })
 
     }
+
 </script>
 
-
-{% endblock content %}
+{% endblock %}

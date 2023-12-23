@@ -1,11 +1,7 @@
-# from django.contrib.auth.mixins import UserPassesTestMixin
-# from django.shortcuts import redirect
-# from django.urls import reverse
+# from utils.utility import get_or_not_found
+# from django.contrib.auth.mixins import AccessMixin
+# from django.core.exceptions import PermissionDenied
+# from post.models import Like,Post
 
-# class IsUserAuthenticatedMixins(UserPassesTestMixin):
-#     def test_func(self):
-#         if self.request.user and self.request.user.is_authenticated:
-#             return True
-#         else:
-#             return False
+
 

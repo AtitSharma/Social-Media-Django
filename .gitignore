@@ -1,5 +1,8 @@
 .env
 .vscode
 __pycache__
-media
+mediafiles
 social_env
+db.sqlite3
+.DS_Store
+

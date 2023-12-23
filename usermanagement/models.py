@@ -50,7 +50,7 @@ class User(AbstractUser):
     name = models.CharField(max_length=255)
     gender = models.CharField(max_length=10,choices=Gender.choices)
     date_of_birth = models.DateField(blank=True,null=True)
-    profile_picture = models.ImageField("media/",blank=True,null=True)
+    profile_picture = models.ImageField("user",blank=True,null=True)
     about = models.CharField(max_length=255,blank=True,null=True)
 
     class Meta:
@@ -75,4 +75,7 @@ class FriendRequest(TimeStampAbstractModel):
     status = models.CharField(max_length=20,choices=Status.choices,default=Status.PENDING)
 
     def __str__(self):
-        return str(self.from_user.all().first().name) +"sends friend requset to "+ str(self.to_user.all().first().name)
+
+        return str(self.id)+ " " +str(self.from_user.all().first().name) +"sends friend requset to "+ str(self.to_user.all().first().name)
+    
+

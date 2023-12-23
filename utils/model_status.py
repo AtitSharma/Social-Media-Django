@@ -23,3 +23,10 @@ class Status(models.TextChoices):
     PENDING = '1'
     ACCEPTED = '2'
     REJECTED = '3'
+
+
+class PostStatus(models.TextChoices):
+
+    PUBLIC = '1'
+    PRIVATE = '2'
+    
