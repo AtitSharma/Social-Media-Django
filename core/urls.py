@@ -19,12 +19,19 @@ from django.urls import path,include
 from django.conf.urls.static import static
 from django.conf import settings
 
+
+handler404 = 'utils.views.error_404'
+handler403 = 'utils.views.error_403'
+handler500 = 'utils.views.error_500'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("user/",include("usermanagement.urls",namespace="user")),
     path("post/",include("post.urls",namespace="post")),
-    path("",include("utils.urls",namespace="home"))
+    path("chat/",include("message.urls",namespace="message")),
+    path("",include("utils.urls",namespace="home")),
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+
 
 
 

@@ -4,10 +4,8 @@ from usermanagement.views import (RegisterUserAccount
                                   ,LogoutView,
                                   GetUserPostView,
                                   GetAllUserFriendRequest,
-                                  AcceptRejectFriendRequest
-                                  
-                                  
-                                  
+                                  AcceptRejectFriendRequest,
+                                  GetAllFriendListView 
                                   )
 
 app_name = "user"
@@ -19,5 +17,6 @@ urlpatterns =[
     path("logout/",LogoutView.as_view(),name="logout-user"),
     path("get-user-detail/",GetUserPostView.as_view(),name="get-user-detail"),        
     path("get-all-friend-request/",GetAllUserFriendRequest.as_view(),name="get-all-friend-request"),
-    path("accept-reject-friend-request/<int:id>/",AcceptRejectFriendRequest.as_view(),name="accept-reject-friend-request")
+    path("accept-reject-friend-request/<int:id>/",AcceptRejectFriendRequest.as_view(),name="accept-reject-friend-request"),
+    path("get-all-friends/",GetAllFriendListView.as_view(),name="all-friends")
 ]

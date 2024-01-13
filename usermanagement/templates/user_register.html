@@ -1,5 +1,8 @@
-<form method="POST">
-    {% csrf_token %}
+
+{% load static %}
+
+<!-- <form method="POST">
+ 
     {{ form.as_p }}
 
     {% if form.errors %}
@@ -11,4 +14,80 @@
     {% endif %}
 
     <input type="submit" value="Submit">
-</form>
+</form> -->
+{% block content %}
+    <title>FACEEBOOK</title>
+    <link
+      rel="stylesheet"
+      href="https://unicons.iconscout.com/release/v4.0.8/css/line.css"
+    />
+    <link rel="stylesheet" href="{% static 'css/bs_icon.css' %}">
+  </head>
+  <body>
+    <div class="container">
+      <div class="forms">
+        <div class="form_login">
+          <span class="Title">Register</span>
+          <form action="" method="POST">
+            {% csrf_token %}
+            <div class="input_box">
+                <input type="text" name="first_name" placeholder="First name" required>
+                <i class="uil uil-user"></i>
+            </div>
+            <div class="input_box">
+                <input type="text" name="middle_name" placeholder="Middle name">
+                <i class="uil uil-user"></i>
+            </div>
+            <div class="input_box">
+                <input type="text" name="last_name" placeholder="Last name" required>
+                <i class="uil uil-user"></i>
+            </div>
+            <div class="input_box">
+              <input name="email" type="email" placeholder="Enter your email" required>
+              <i class="uil uil-envelope-alt"></i>
+            </div>
+            <div class="input_box">
+              <input name="password1" type="password" placeholder="Enter your password" required>
+              <i class="uil uil-padlock icon"></i>
+              <i class="uil uil-eye-slash flash" onclick="show('eye-pass1',1)" id="eye-pass1"></i>
+            </div>
+            <div class="input_box">
+              <input name="password2" type="password" placeholder="Confirm your password" required>
+              <i class="uil uil-padlock icon"></i>
+              <i class="uil uil-eye-slash flash" onclick="show('eye-pass2',2)" id="eye-pass2"></i>
+            </div>
+            <div class="inbox_button">
+              <input type="submit" value="Register">
+            </div>
+            
+          </form>
+          <div class="Register_box">
+            <span class="reg">Already have account?
+             <a href="{% url 'user:login-user' %}" class="Register">Login now.</a>
+            </span>
+           </div>
+        </div>
+      </div>
+    </div>
+  </body>
+
+
+  <script>
+    function show(classname,num){
+        if(!(document.getElementById(classname).className=="uil uil-eye flash")){
+            document.getElementById(classname).className="uil uil-eye flash"
+            document.getElementsByName(`password${num}`)[0].type="text"
+        }
+        else{
+            document.getElementById(classname).className="uil uil-eye-slash flash"
+            document.getElementsByName(`password${num}`)[0].type="password"
+        }
+
+    }
+
+
+  </script>
+</html>
+
+
+{% endblock content %}

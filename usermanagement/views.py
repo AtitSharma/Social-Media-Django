@@ -19,11 +19,12 @@ class RegisterUserAccount(View):
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            user.is_active = False
+            # user.is_active = False
             user.save()
-            send_email_to_verify_user(user.id)
+            # send_email_to_verify_user(user.id)
             return redirect("user:otp-page")
-        return render(request,"user_register.html",context={"form":form})
+        errors = [v[0] for v in form.errors.values()]
+        return render(request,"user_register.html",context={"errors":errors})
         
     def get(self,request,*args,**kwargs):
         form = UserRegisterForm()
@@ -66,7 +67,7 @@ class LoginUserView(View):
         return render(request,"user_login.html",context={"form":form})
     
 
-class LogoutView(View):
+class LogoutView(LoginRequiredMixin,View):
     def get(self,request,*args,**kwargs):
         logout(request)
         return redirect("user:login-user")
@@ -84,15 +85,12 @@ class GetUserPostView(LoginRequiredMixin,View):
             "shared_posts":shared_post_query.get_all_data()
         }
         return render(request,"user_profile.html",context=context)
-
-
-
-
 class GetAllUserFriendRequest(LoginRequiredMixin,View):
     def get(self,request,*args,**kwargs):
         query = FriendRequest.objects.filter(Q(to_user=request.user) & Q(status=Status.PENDING)).order_by("-created_at")
         data = GetAllFriendRequestQuery(data=query)
         return JsonResponse({"messaage":data.get_all_data()})
+        
     
 
 class AcceptRejectFriendRequest(LoginRequiredMixin,IsRealFriendRequestAccepterUser,View):
@@ -104,6 +102,19 @@ class AcceptRejectFriendRequest(LoginRequiredMixin,IsRealFriendRequestAccepterUs
             friend_request.status = Status.ACCEPTED
         friend_request.save()
         return JsonResponse({"message":[],"status":200})
+    
+
+
+class GetAllFriendListView(LoginRequiredMixin,View):
+    def get(self,request,*args,**kwargs):
+        friends = FriendRequest.objects.filter(to_user=request.user,status=Status.ACCEPTED).all()
+        context = {"friends":[]}
+        if friends:
+            context["friends"] = friends
+        return render(request,"friend_request.html",context=context)
+        
+
+
     
 
 

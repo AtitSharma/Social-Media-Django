@@ -3,7 +3,6 @@ from utils.models import TimeStampAbstractModel
 from usermanagement.models import User
 from utils.model_status import LikeChoices,PostStatus
 from django.db.models import Q
-from django.conf import settings
 from django.core.exceptions import PermissionDenied
 
 
@@ -31,6 +30,7 @@ class Like(TimeStampAbstractModel):
     class Meta:
         constraints=[
             models.UniqueConstraint(fields=["post","liked_user"],name="unique_like"),
+            models.UniqueConstraint(fields=["shared_post","liked_user"],name="unique_shared_post_like"),
         ]
 
     def __str__(self):
@@ -51,10 +51,23 @@ class Like(TimeStampAbstractModel):
 class Comment(TimeStampAbstractModel):
     message = models.TextField()
     user = models.ForeignKey(User,on_delete=models.CASCADE,related_name="comment_user")
-    post = models.ForeignKey(Post,on_delete=models.CASCADE,related_name="comment_post")
+    post = models.ForeignKey(Post,on_delete=models.CASCADE,related_name="comment_post",blank=True,null=True)
+    shared_post = models.ForeignKey('SharedPost',on_delete=models.CASCADE,related_name="comment_shared_post",blank=True,null=True)
 
     def __str__(self):
-        return str(self.message)
+        return f"{self.id}   {self.message}"
+    
+
+    def save(self,*args,**kwargs):
+        if not self.is_post_or_is_shared_post():
+            raise PermissionDenied
+        super(Comment,self).save(*args,**kwargs)
+
+    
+    def is_post_or_is_shared_post(self):
+        if (self.post and self.shared_post) or (not self.post and not self.shared_post):
+            return False
+        return True
 
 
 class PostImages(TimeStampAbstractModel):

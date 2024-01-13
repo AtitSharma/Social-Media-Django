@@ -1,6 +1,4 @@
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,22 +8,18 @@
     <!-- css  -->
     <link rel="stylesheet" href="{% static 'css/navcss.css'%}">
 </head>
-<body>
-    <div class="main_container">
+<div class="main_container">
             <div class="nab_bar">
                 <nav>
                     <div class="nav_left">
                         <div class="logo">
-                            <img src="{% static 'images/logo.png'%}" alt="">
+                          <img src="{% static 'images/logo.png'%}" alt="">
                         </div>
-                        <div class="search_bar">
-                            <i class="uil uil-search"></i>
                         <input type="text" placeholder="Search">
-                        </div>
                     </div>
                     <div class="nav_mid">
                         <i class="uil uil-estate"></i>
-                        
+                        <i class="uil uil-users-alt" onclick='redirect()'></i>
                         <i class="uil uil-tv-retro"></i>
                         <i class="uil uil-store"></i>
                     </div>
@@ -34,24 +28,19 @@
                         <i class="uil uil-facebook-messenger"></i>
                         <i class="uil uil-bell"></i>
                         <div class="logo">
-                            <img src="Makima.600.png" alt="">
+                            <img src="{% static 'images/logo.png'%}" alt="">
                         </div>
                     </div>
                 </nav>
-                
-            </div>
-            <div class="menu_bar">
-                <div class="list">
-                <li><a href="">Name with image</a></li>
-                <li><a href="">Friends</a></li>
-                <li><a href="">Video</a></li>
-                <li><a href="">Store</a></li>
-                <li><a href="">Explor</a></li>
-                <li><a href="">See more..</a></li>
-                </div>
             </div>
     </div>
-
-</body>
-<br><br><br><br>
+    <br><br><br><br>
 </html>
+
+
+<script>
+    function redirect(){
+        url =  "{% url 'user:all-friends' %}"
+        window.location.href = url 
+    }
+</script>

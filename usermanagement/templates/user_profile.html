@@ -10,6 +10,21 @@
     {% for image in post.images %}
         <img src="{{ image }}" height="200px">
     {% endfor %}
+    <br>
+    <button  onclick="GetAllComments({{post.id}})">  Get All Comments </button>
+    <button  onclick="HideComments({{post.id}},'post')">  Hide </button>
+    <br>
+    <form id="comment-post{{post.id}}" method="post" action="#">
+        {% csrf_token %}
+        <label for="message"></label>
+        <input type="text" placeholder="Say something to {{post.username}}" name="message" required>
+        <input type="hidden" name="post" value="{{post.id}}" >
+        <button onclick="SubmitComment({{post.id}})">Comment Now </button>
+    </form>
+    <div id="Allcommentss{{post.id}}">
+
+    </div>
+    <br>
 {% endfor %}
 
 <br>
@@ -24,16 +39,19 @@
     {% for post in shared_post.post %}
         Description : {{post.description}} <br>
         Post User : {{post.username}} <br>
+        {% for image in post.images %}
+            <img src="{{ image }}" height="200px">
+        {% endfor %}
+        <br>
     {% endfor %}
     Shared Post Likes : <span id="shared_post_like{{shared_post.id}}">{{shared_post.likes}} </span> 
     <a href="" onclick="LikeTheSharedPost({{shared_post.id}})"> Like </a> <br>
-    ********************
+    <br>
+    <button  onclick="GetAllSharedPostComments({{shared_post.id}})">  Get All Comments </button>
+    <button  onclick="HideComments({{shared_post.id}},'shared_post')">  Hide </button>
+    <div id="AllSharedPostcommentss{{shared_post.id}}"></div>
     {% endfor %}
-
-<br>
-********************
-<br>
-
+    
 <script>
 
     function likethePost(id){
@@ -62,6 +80,133 @@
         })
 
     }
+
+
+
+    function GetAllComments(id){
+
+        event.preventDefault();
+        $(`#Allcommentss${id}`).show();
+        url = "{%  url 'post:get-all-comments' 0 %}".replace("0",id);
+        $.ajax({
+            url : url,
+            type : "GET",
+            contentType:"application/json",
+            success : function(response){
+                document.getElementById(`Allcommentss${id}`).innerHTML=""
+                for(i=0;i<response.data.length;i++){
+                    data = response.data[i]
+                    var newCommentHtml = `<div id=comment${data.id}>`
+                    newCommentHtml +=`
+                    <br>
+                    <p id=${data.id}> ${data.message} </p>
+                    Commented By : ${data.user}<br>
+                    <br>
+                    *****************************************
+                    <br>
+                    `;
+
+                   newCommentHtml += '</div>'; 
+                   document.getElementById(`Allcommentss${id}`).insertAdjacentHTML("beforeend",newCommentHtml);
+                }
+                
+        
+            }
+        })
+
+    }
+
+
+
+
+
+    function GetAllSharedPostComments(id){
+        event.preventDefault();
+        $(`#AllSharedPostcommentss${id}`).show();
+        url = "{% url 'post:get-all-comments-shared-post' 0 %}".replace("0",id);
+        $.ajax({
+            url : url ,
+            type : "GET" ,
+            contentType:"application/json",
+                success : function(response){
+                var newCommentHtml = `<div id=AllSharedPostcommentss${id}>`
+                for(i=0;i<response.data.length;i++){
+                    data = response.data[i]
+                    
+                    newCommentHtml +=`
+                    <br>
+                    <p id=${data.id}> ${data.message} </p>
+                    Commented By : ${data.user}<br>
+                    <br>
+                    *****************************************
+                    <br>
+                    `;
+
+                    
+                }
+                newCommentHtml += '</div>';
+                document.getElementById(`AllSharedPostcommentss${id}`).innerHTML = newCommentHtml;
+            }
+
+        })
+
+    }
+
+
+    function SubmitComment(id){
+        event.preventDefault();
+        var formData = $(`#comment-post${id}`).serializeArray();
+        var jsonData = {};
+         for (var i = 0; i < formData.length; i++) {
+          var item = formData[i];
+          jsonData[item.name] = item.value;
+        }
+        var jsonStr = JSON.stringify(jsonData);
+        url = "{% url 'post:create-post-comment' %}"
+        $.ajax({
+            type : "POST",
+            url : url ,
+            contentType: "application/json; charset=utf-8",
+            data: jsonStr,
+            dataType: "json",
+            headers: {
+            'X-CSRFToken': getCSRFToken()
+          },
+            success: function(response){
+                var newCommentHtml = document.getElementById(`Allcommentss${id}`);
+                if (newCommentHtml) {
+                    newCommentHtml.insertAdjacentHTML('afterend', `
+                    <div id="comment${response.id}">
+                        <br>
+                        <p id="${response.id}">${response.data.message}</p>
+                        Commented By: ${response.username}<br>
+                        <br>
+                        *****************************************
+                        <br>
+                    `);
+                    document.getElementById(`comment-post${id}`).reset();
+                } else {
+                    console.error('Element with specified ID not found.');
+                }
+            }
+        })
+    }
+    
+
+
+
+
+    function HideComments(id,name){
+        if(name === 'post'){
+            $(`#Allcommentss${id}`).hide()
+            return 
+        }
+        $(`#AllSharedPostcommentss${id}`).hide();
+        return
+      
+    }
+
+
 
 </script>
 

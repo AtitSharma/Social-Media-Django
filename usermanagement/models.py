@@ -75,7 +75,6 @@ class FriendRequest(TimeStampAbstractModel):
     status = models.CharField(max_length=20,choices=Status.choices,default=Status.PENDING)
 
     def __str__(self):
-
         return str(self.id)+ " " +str(self.from_user.all().first().name) +"sends friend requset to "+ str(self.to_user.all().first().name)
     
 
