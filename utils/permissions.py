@@ -5,5 +5,4 @@ from django.views import View
 
 
 class LogindInUserView(LoginRequiredMixin,View):
-    print("Success")
     pass

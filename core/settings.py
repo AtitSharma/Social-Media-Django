@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-ad9@e9+r8=ub-3ld_=q@d(ng61=uw^lz2*+jm4j-6k#p73^#i5'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["192.168.10.56","*"]
 
@@ -156,3 +156,10 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 LOGIN_URL="user:login-user"
 # LOGIN_REDIRECT_URL = "user:login-user"
 # LOGOUT_REDIRECT_URL = "user:logout-use"
+
+
+
+
+handler404 = 'utils.views.error_404'
+handler403 = 'utils.views.error_403'
+handler500 = 'utils.views.error_500'
