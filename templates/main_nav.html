@@ -1,0 +1,29 @@
+{% load static %}
+
+
+<div class="left">
+    <a href="" class="UserImg_cont">
+        {% if request.user.profile_picture %}
+        <img src="{{ request.user.profile_picture.url }}">
+        {% else %}
+        <img src="{% static 'images/default.png' %}">
+        {% endif %}
+        <span class="User_name">{{request.user.name}}</span>
+    </a>
+    <a href="">
+        <i class="bi bi-house-door-fill"></i>
+        <span class="Iname">Home</span>
+    </a>
+    <a href="">
+        <i class="bi bi-person-circle"></i>
+        <span class="Iname">Profile</span>
+    </a>
+    <a href="">
+        <i class="bi bi-people-fill"></i>
+        <span class="Iname">Friends</span>
+    </a>
+    <a href="">
+        <i class="bi bi-tv-fill"></i>
+        <span class="Iname">Video</span>
+    </a>
+</div>

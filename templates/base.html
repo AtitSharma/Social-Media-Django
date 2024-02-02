@@ -10,20 +10,26 @@
     {% block stylesheet %}
     <link rel="stylesheet" href="{% static 'css/bs.min.css' %}" type="text/css"/> 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/navcss.css' %}" type="text/css"/> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     {% endblock stylesheet %}
 </head>
-<div class ="container">
+<body>
     {% block navbar %}
         {% include 'navbar.html' %}
     {% endblock navbar%}
-</div>
-<body>
-    <div class="main_content_block">
+    <br>
+    <br>
+    <div class="main">
+    {% block main %}
+        {% include 'main_nav.html'%}
+    <div class="center">
         {% block content %}
         {% endblock content %}
     </div> 
+    {% endblock main%}
+    </div>
 </body>
 {% block script %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>

@@ -6,7 +6,8 @@ from django.http import JsonResponse
 from post.forms import PostCreationForm,CreatePostCommentForm
 import json
 from utils.utility import get_or_not_found
-from post.query import GetAllCommentsQuery
+from post.query import GetAllCommentsQuery,GetAallPostDetailQuery
+from utils.permissions import LogindInUserView
 
 class CreatePostView(LoginRequiredMixin,View):
     def post(self,request,*args,**kwargs):
@@ -52,11 +53,23 @@ class LikeDislikeSharedPost(LoginRequiredMixin,View):
 class CreateCommentView(LoginRequiredMixin,View):
     def post(self,request,*args,**kwargs):
         data = json.loads(request.body)
+        data.update({"user":request.user})
         form = CreatePostCommentForm(data)
         if form.is_valid():
             comment = form.save(user=request.user)
             comment.save()
-            return JsonResponse({"message":"Comment Added in Post Successfully ","id":comment.id,"username":comment.user.name,"data":form.data})
+            profile_pic = comment.user.profile_picture.url if comment.user.profile_picture else None
+            username = comment.user.name
+            message = comment.message
+            context = {
+                "message":"Comment Added Successfully",
+                "id":comment.id,
+                "profile_pic":profile_pic,
+                "username":username,
+                "comment" : message,
+
+            }
+            return JsonResponse(context)
         return JsonResponse({"message":"Comment Cannot be Added in Post ","data":[]})
 
 
@@ -82,4 +95,17 @@ class GetAllSharedPostCommentView(LoginRequiredMixin,View):
         data = Comment.objects.filter(shared_post=shared_post).order_by("-created_at")
         comments = GetAllCommentsQuery(data=data)
         return JsonResponse({"message":"All Shared Post Comments Retrieved Successfully ","data":comments.get_all_data()})
+    
+
+
+class GetPostDetailsView(LogindInUserView):
+    
+    def get(self,request,*args,**kwargs):
+        post = get_or_not_found(Post.objects.all(),id=kwargs.get("id"))
+        post = Post.objects.filter(id=post.id)
+        query = GetAallPostDetailQuery(data=post)
+        context = {
+            "posts":query.get_all_data()
+        }
+        return render(request,"post_detail.html",context=context)
     

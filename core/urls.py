@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path,include
 from django.conf.urls.static import static
 from django.conf import settings
+from utils import views
 
 
 
@@ -30,7 +31,11 @@ urlpatterns = [
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
 
 
-
+# urlpatterns += [
+#     path('404/', views.error_404, name='error_404'),
+#     path('403/', views.error_403, name='error_403'),
+#     path('500/', views.error_500, name='error_500'),
+# ]
 
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

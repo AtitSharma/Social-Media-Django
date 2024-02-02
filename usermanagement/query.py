@@ -40,6 +40,7 @@ class GetUserAllPostQuery(QueryPatterns):
             all_data_in_dict["username"] = post.user.name
             all_data_in_dict["likes"] = post.get_likes
             all_data_in_dict["images"] = GetPostImages(data=post).get_all_data()
+            all_data_in_dict["profile_pic"] = post.user.profile_picture.url if post.user.profile_picture else None
             all_datas.append(all_data_in_dict)
         return all_datas
 

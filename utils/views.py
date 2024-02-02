@@ -2,14 +2,16 @@ from django.shortcuts import render
 from django.views import View
 from post.models import Post
 from utils.permissions import LogindInUserView
+from usermanagement.query import GetUserAllPostQuery
 
 
 
 class HomeView(LogindInUserView):
     def get(self,request,*args,**kwargs):
-        posts = Post.objects.all()
+        posts = Post.objects.all().order_by("?")
+        query = GetUserAllPostQuery(data=posts)
         context = {
-            "posts" : posts
+            "posts" : query.get_all_data()
         }
         return render(request,"home_page.html",context=context)
     

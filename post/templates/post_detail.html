@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+{% if posts %}
+{% for post in posts %}
+{% for data in post.post %}
+
+
+<div class="Posts">
+    <div class="upper_post">
+        <div class="img_name">
+            {% if post.profile_pic %}
+            <img src="{{post.profile_pic}}" alt="">
+            {% else %}
+            <img src="{% static 'images/default.png' %}">
+            {% endif %}
+            <div class="Details">
+                <p class="UserName">{{data.username}}</p>
+                <p class="time">1 day ago.<i class="bi bi-people-fill"></i></p>
+            </div>
+        </div>
+        <div class="menu">
+            <i class="bi bi-three-dots"></i>
+        </div>
+
+    </div>
+    
+        <p>
+            {{data.description}}
+
+        </p>
+        <!-- {{post}} -->
+        {% for image in data.images %}
+        {% if image %}
+        <img src="{{ image }}" alt="">
+        {% endif %}
+        {% endfor %}
+    </a>
+    <hr>
+    <div class="actions">
+        <div class="react" onclick="liked({{data.id}})">
+            <p id="post{{data.id}}">{{data.likes}}</p>
+            <i class="bi bi-hand-thumbs-up-fill"></i>
+            <p>Like</p>
+        </div>
+        <div class="react" id="comment" onclick="hidecomment()">
+            <i class="bi bi-chat"></i>
+            <p>Comment</p>
+        </div>
+        <div class="react" id="share">
+            <i class="bi bi-share-fill"></i>
+            <p>Share</p>
+        </div>
+    </div>
+    <hr>
+        <div class="comment_section">
+            {% if request.user.profile_picture %}
+            <img src="{{ request.user.profile_picture.url }}">
+            {% else %}
+            <img src="{% static 'images/default.png' %}">
+            {% endif %}
+            <div class="comment_Sub">
+                <input id="comment_id" type="text" placeholder="Write a comment..">
+                <a href="" id="comment_post" onclick="submitComment({{data.id}})" >
+                    <i class="bi bi-send-fill"></i>
+                </a>
+            </div>
+
+        </div>
+    <div id="all_comments">
+        {% if post.comments %}
+            {% for comment in post.comments %}
+            <div class="commented" id=all_comments{{comment.id}}>
+                <div class="commenter" id=comment_upper{{comment.id}}>
+                    {% if comment.profile_pic %}
+                    <img src="{{comment.profile_pic}}" alt="">
+                    {% else %}
+                    <img src="{% static 'images/default.png' %}">
+                    {% endif %}
+                    <div class="commented_com">
+                        <p class="UserName">{{comment.user}}<i class="bi bi-people-fill"></i></p>
+                    </div>
+                </div>
+                <p class="comment_body" id="comment_lower{{comment.id}}">
+                    {{comment.message}}
+                </p>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+{% endfor %}
+{% endif %}
+
+<script >
+    function liked(id) {
+            const URL = "{% url 'post:like-dislike-posts' 0 %}".replace("0", id);
+            event.preventDefault();
+            $.ajax({
+                url: URL,
+                type: "GET",
+                success: function (response) {
+                    document.getElementById(`post${id}`).innerHTML = response.message;
+                }
+            },
+            )
+        }
+
+
+    function submitComment(id){
+        event.preventDefault();
+        comment = document.getElementById("comment_id").value;
+        console.log(comment.length)
+        if(comment.length < 1){
+            return ;
+        }
+        const url = "{% url 'post:create-post-comment' %}";
+        json_data = {"message":comment,"post":id};
+        var jsonDataStr = JSON.stringify(json_data);
+        $.ajax({
+            url : url,
+            method : "POST",
+            data : jsonDataStr,
+            contentType: "application/json",
+            headers: {
+                'X-CSRFToken': getCSRFToken(),
+
+            },
+            success : function(response){
+                // console.log(response);
+                id = response.id;
+                comment = response.comment;
+                message = response.message ;
+                profile = response.profile_pic;
+                username = response.username ;
+                if(profile===null){
+                    profile ="{% static 'images/default.png' %}"
+                }
+                upper_upper = ` <div class="commented" id=all_comments${id}>`
+                upper_class = `<div class="commenter" id=comment_upper${id}>
+                                <img src="${profile}" alt="">
+                                <div class="commented_com">
+                                    <p class="UserName">${username}<i class="bi bi-people-fill"></i></p>
+                                </div>
+                            </div>`
+                lower_class = `
+                        <p class="comment_body" id="comment_lower${id}">
+                        ${comment}
+                        </p> 
+                    </div>  
+                `
+
+                final_ans = upper_upper+ upper_class + lower_class ;
+
+                all_previous_comments = document.getElementById("all_comments").innerHTML
+                final_comments = final_ans + all_previous_comments ;
+                document.getElementById("all_comments").innerHTML = final_comments;
+                document.getElementById("comment_id").value = "";
+
+            }
+        }
+        )   
+    }
+
+
+
+    function hidecomment(){
+        is_shown = document.getElementById("all_comments");
+        id
+
+        $("#all_comments").hide();
+    }
+
+</script>
+
+{% endblock content %}

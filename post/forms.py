@@ -16,9 +16,9 @@ class PostCreationForm(forms.Form):
 
 
 class CreatePostCommentForm(forms.Form):
-    user = forms.CharField(required=False)
+    user = forms.CharField()
     message = forms.CharField()
-    post = forms.CharField()
+    post = forms.IntegerField()
     
     def save(self,user):
         post =get_or_not_found(Post.objects.all(),id=self.cleaned_data.get("post"))

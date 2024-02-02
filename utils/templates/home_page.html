@@ -1,76 +1,169 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block content %}
-    {{posts}}
+<div class="Create">
+    <form action="">
+    <div class="create_post">
+        {% if request.user.profile_picture %}
+        <img src="{{ request.user.profile_picture.url }}">
+        {% else %}
+        <img src="{% static 'images/default.png' %}">
+        {% endif %}
+        <div class="inputSection">
+            <input type="text" placeholder="shjgahjsajhghsjgadha">
+            <a href="">
+                <i class="bi bi-send-fill"></i>
+            </a>
+        </div>
+    </div>
+    </form>
+    <hr>
+    <div class="creat_icon">
+        <a href="" class="live">
+            <i class="bi bi-camera-video-fill"></i>
+            <span>Live Video</span>
+        </a>
+        <a href="" class="P_V">
+            <i class="bi bi-images"></i>
+            <span>Photo/Video</span>
+        </a>
+        <a href="" class="Smile">
+            <i class="bi bi-emoji-smile"></i>
+            <span>felling/activity</span>
+        </a>
+    </div>
+</div>
+{% if posts %}
+{% for post in posts %}
+<div class="Posts">
+    <div class="upper_post">
+        <div class="img_name">
+
+            {% if post.profile_pic %}
+            <img src="{{post.profile_pic}}" alt="">
+            {% else %}
+            <img src="{% static 'images/default.png' %}">
+            {% endif %}
+            <div class="Details">
+                <p class="UserName">{{post.username}}</p>
+                <p class="time">1 day ago.<i class="bi bi-people-fill"></i></p>
+            </div>
+        </div>
+        <div class="menu">
+            <i class="bi bi-three-dots"></i>
+        </div>
+
+    </div>
+    <a href="{% url 'post:get-post-details' post.id %}" class="dsc">
+        <p>
+            {{post.description}}
+
+        </p>
+        <!-- {{post}} -->
+        {% for image in post.images %}
+        {% if image %}
+        <img src="{{ image }}" alt="">
+        {% endif %}
+        {% endfor %}
+    </a>
+    <hr>
+    <div class="actions">
+        <div class="react" onclick="liked({{post.id}})">
+            <p id="post{{post.id}}">{{post.likes}}</p>
+            <i class="bi bi-hand-thumbs-up-fill"></i>
+            <p>Like</p>
+        </div>
+        <div class="react" id="comment">
+            <i class="bi bi-chat"></i>
+            <p>Comment</p>
+        </div>
+        <div class="react" id="share">
+            <i class="bi bi-share-fill"></i>
+            <p>Share</p>
+        </div>
+    </div>
+    <hr>
+
+    <form action="">
+
+        <div class="comment_section">
+            {% if request.user.profile_picture %}
+            <img src="{{ request.user.profile_picture.url }}">
+            {% else %}
+            <img src="{% static 'images/default.png' %}">
+            {% endif %}
+            <div class="comment_Sub">
+                <input type="text" placeholder="Write a comment..">
+                <a href="">
+                    <i class="bi bi-send-fill"></i>
+                </a>
+            </div>
+
+        </div>
+    </form>
+
+
+    </hr>
+
+
+</div>
+{% endfor %}
+{% endif %}
 
 
 
-<button onclick="displayform()"> Create A Post </button>
 
-<form id="add-post-form" method="post">
-    <label for="description"> Enter the post </label>
-    <input type="text" name="description" placeholder="What is in your mind ? ">
-    <input type="submit" value="Add Post" onclick="addpostview()">
-</form>
-
-
-<!-- <button onclick="addpostview()"></button> -->
 
 <script>
     $("#add-post-form").hide()
 
-    function addpostview(){
+    function addpostview() {
         event.preventDefault()
-        var formdata=$("#add-post-form").serializeArray();
+        var formdata = $("#add-post-form").serializeArray();
         console.log(formdata)
-        var jsondata={};
-        for(var i =0;i<formdata.length;i++){
-              var item= formdata[i];
-              jsondata[item.name]=item.value;
-            }
+        var jsondata = {};
+        for (var i = 0; i < formdata.length; i++) {
+            var item = formdata[i];
+            jsondata[item.name] = item.value;
+        }
         const createPostUrl = "{% url 'post:create' %}";
         var jsonDataStr = JSON.stringify(jsondata);
         console.log(createPostUrl);
         $.ajax({
-            url :createPostUrl,
-            type :"POST",
+            url: createPostUrl,
+            type: "POST",
             data: jsonDataStr,
-            contentType:"application/json",
-            headers :{ 
-                'X-CSRFToken':getCSRFToken(),
+            contentType: "application/json",
+            headers: {
+                'X-CSRFToken': getCSRFToken(),
 
-              },
-            success: function(response){
+            },
+            success: function (response) {
                 console.log(response)
             }
         })
 
-        
+
     }
 
 
-    function getCSRFToken() {
-            var cookieValue = null;
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++) {
-              var cookie = cookies[i].trim();
-              if (cookie.startsWith('csrftoken=')) {
-                cookieValue = cookie.substring('csrftoken='.length, cookie.length);
-                break;
-              }
+
+
+    function liked(id) {
+        const URL = "{% url 'post:like-dislike-posts' 0 %}".replace("0", id);
+        event.preventDefault();
+        $.ajax({
+            url: URL,
+            type: "GET",
+            success: function (response) {
+                document.getElementById(`post${id}`).innerHTML = response.message;
             }
-            return cookieValue;
+        },
+        )
     }
-
-
-    function  displayform(){
-        $("#add-post-form").show()
-    }
-
 
 </script>
 
 
 
 {% endblock content %}
-
