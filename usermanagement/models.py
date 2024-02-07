@@ -58,9 +58,9 @@ class User(AbstractUser):
         verbose_name_plural="Users"
 
     def save(self,*args,**kwargs):
-        if len(self.first_name)>0  and len(self.middle_name)>0 and len(self.last_name)>0:
+        if self.middle_name:
             self.name =  self.first_name +" "+ self.middle_name +" "+self.last_name
-        elif len(self.first_name)>0  and len(self.last_name)>0:
+        else:
             self.name= self.first_name +" "+self.last_name
         super(User,self).save(*args,**kwargs)
 

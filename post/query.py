@@ -17,12 +17,12 @@ class GetAllCommentsQuery(QueryPatterns):
 
 class GetAallPostDetailQuery(QueryPatterns):
 
-    def get_all_data(self):
+    def get_all_data(self,request):
         all_datas =[]
         comments = Comment.objects.filter(post=self.data.first()).order_by("-created_at")
         for data in self.data:
             all_data_in_dict = {}
-            all_data_in_dict["post"] = GetUserAllPostQuery(data=[data]).get_all_data()
+            all_data_in_dict["post"] = GetUserAllPostQuery(data=[data]).get_all_data(request=request)
             all_data_in_dict["comments"] = GetAllCommentsQuery(data=comments).get_all_data()
             all_datas.append(all_data_in_dict)
         return all_datas     

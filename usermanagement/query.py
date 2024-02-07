@@ -31,7 +31,7 @@ class GetAllFriendRequestQuery(QueryPatterns):
 
 class GetUserAllPostQuery(QueryPatterns):
 
-    def get_all_data(self):
+    def get_all_data(self,request):
         all_datas = []
         for post in self.data :
             all_data_in_dict = {}
@@ -39,7 +39,11 @@ class GetUserAllPostQuery(QueryPatterns):
             all_data_in_dict["description"] = post.description
             all_data_in_dict["username"] = post.user.name
             all_data_in_dict["likes"] = post.get_likes
+            all_data_in_dict["comments_count"] = post.get_comments
+            all_data_in_dict["shared_count"] = post.shared_post_count
+            all_data_in_dict["is_liked_by_current_user"] = post.get_is_liked_by_user(request)
             all_data_in_dict["images"] = GetPostImages(data=post).get_all_data()
+            all_data_in_dict["created_at"] = post.created_at
             all_data_in_dict["profile_pic"] = post.user.profile_picture.url if post.user.profile_picture else None
             all_datas.append(all_data_in_dict)
         return all_datas

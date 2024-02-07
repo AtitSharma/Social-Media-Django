@@ -19,6 +19,22 @@ class Post(TimeStampAbstractModel):
     def get_likes(self):
         likes = Like.objects.filter(Q(post=self) & Q(is_liked=True))
         return len(likes)
+    
+    @property
+    def get_comments(self):
+        comments = Comment.objects.filter(post=self)
+        return len(comments)
+    
+    @property
+    def shared_post_count(self):
+        shared_count = SharedPost.objects.filter(post=self).all()
+        return len(shared_count)
+    
+    def get_is_liked_by_user(self,request):
+        like = Like.objects.filter(liked_user=request.user,post=self,is_liked=True).first()
+        return True if like else False
+
+
 
 
 class Like(TimeStampAbstractModel):

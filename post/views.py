@@ -19,8 +19,12 @@ class CreatePostView(LoginRequiredMixin,View):
             post.save()
             message = {
                 "message":"Post Created Successfully",
+                "id": post.id,
                 "description":post.description,
-                "user": post.user.name
+                "user": post.user.name,
+                "profile_pic" : post.user.profile_picture.url if post.user.profile_picture else None,
+                "created_at" : post.created_at,
+                "images":[]
             }
             return JsonResponse({"message":message})
         return JsonResponse({"message":"failed"})
@@ -35,7 +39,7 @@ class LikeDislikePost(LoginRequiredMixin,View):
         else :
             like.is_liked=False
         like.save()
-        return JsonResponse({"message":post.get_likes})
+        return JsonResponse({"message":post.get_likes,"is_liked":like.is_liked})
     
 class LikeDislikeSharedPost(LoginRequiredMixin,View):
     def get(self,request,*args,**kwargs):
@@ -105,7 +109,7 @@ class GetPostDetailsView(LogindInUserView):
         post = Post.objects.filter(id=post.id)
         query = GetAallPostDetailQuery(data=post)
         context = {
-            "posts":query.get_all_data()
+            "posts":query.get_all_data(request)
         }
         return render(request,"post_detail.html",context=context)
     

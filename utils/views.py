@@ -11,7 +11,7 @@ class HomeView(LogindInUserView):
         posts = Post.objects.all().order_by("?")
         query = GetUserAllPostQuery(data=posts)
         context = {
-            "posts" : query.get_all_data()
+            "posts" : query.get_all_data(request=request)
         }
         return render(request,"home_page.html",context=context)
     

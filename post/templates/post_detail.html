@@ -3,6 +3,7 @@
 {% block content %}
 {% if posts %}
 {% for post in posts %}
+<!-- {{post}} -->
 {% for data in post.post %}
 
 
@@ -40,7 +41,11 @@
     <div class="actions">
         <div class="react" onclick="liked({{data.id}})">
             <p id="post{{data.id}}">{{data.likes}}</p>
-            <i class="bi bi-hand-thumbs-up-fill"></i>
+            {% if data.is_liked_by_current_user %}
+            <i class="bi bi-hand-thumbs-up-fill" id="like{{data.id}}"></i>
+            {% else %}
+            <i class="bi bi-hand-thumbs-up" id="like{{data.id}}"></i>
+            {% endif %}
             <p>Like</p>
         </div>
         <div class="react" id="comment" onclick="hidecomment()">
@@ -101,7 +106,14 @@
                 url: URL,
                 type: "GET",
                 success: function (response) {
+                    // console.log(response);
                     document.getElementById(`post${id}`).innerHTML = response.message;
+                    if(response.is_liked){
+                   document.getElementById(`like${id}`).className = "bi bi-hand-thumbs-up-fill";
+                        }
+                    else{
+                        document.getElementById(`like${id}`).className = "bi bi-hand-thumbs-up";
+                    }
                 }
             },
             )
