@@ -9,12 +9,13 @@
         <img src="{% static 'images/default.png' %}">
         {% endif %}
         <div class="inputSection">
-
+            <form method="post" onsubmit="createPost()">
                 <input type="text" placeholder="What's on your mind, {{request.user.first_name}}?" id="post_create_model">
                 <a href="" onclick="createPost()">
                     <i class="bi bi-send-fill"></i>
                 </a>
             </div>
+        </form>
     </div>
     <hr>
     <div class="creat_icon">
@@ -77,8 +78,8 @@
             {% endif %}
             <p>Like</p>
         </div>
-        <div class="react" id="comment" onclick="getaAllComments({{post.id}})">
-            <i class="bi bi-chat">{{post.comments_count}}</i>
+        <div class="react" id="comment_box{{post.id}}" onclick="getaAllComments({{post.id}})">
+            <i class="bi bi-chat" id="comment_count_box{{post.id}}">{{post.comments_count}}</i>
             <p>Comment</p>
         </div>
         <div class="react" id="share">
@@ -88,7 +89,7 @@
     </div>
     <hr>
 
-    <form action="" onsubmit="submitcommet({{post.id}})" id="comment_section{{post.id}}">
+    <form method="post" onsubmit="submitcommet({{post.id}})" id="comment_section{{post.id}}">
 
         <div class="comment_section">
             {% if request.user.profile_picture %}
@@ -206,8 +207,8 @@
                             <i class="bi bi-hand-thumbs-up" id="post${response.id}"></i>
                             <p>Like</p>
                         </div>
-                        <div class="react" id="comment" onclick="getaAllComments(${response.id})">
-                            <i class="bi bi-chat">0</i>
+                        <div class="react" id="comment_box${response.id}" onclick="getaAllComments(${response.id})">
+                            <i class="bi bi-chat" id=comment_count_box${response.id}>0</i>
                             <p>Comment</p>
                         </div>
                         <div class="react" id="share">
@@ -269,11 +270,12 @@
 
     function getaAllComments(id){
         const URL = `{% url 'post:get-all-comments' 0 %}`.replace("0",id);
+        console.log("Hello");
         $.ajax({
             url : URL ,
             method : "GET",
             success : function(response){
-                // console.log(response);
+                console.log(response);
                 final_comment = "" ;
                 data = response.data ;
 
@@ -297,11 +299,12 @@
                         <p class="comment_body" id="comment_lower${comment.id}">
                             ${comment.message}
                         </p>
+                        <button onclick="DeleteComment(${comment.id},${id})" style="color:red;"> Delete </button>
                     </div>
                 `
                 final_comment += allcomments ;
                 }                
-                document.getElementById(`all_comment${id}`).innerHTML = final_comment;
+                document.getElementById(`all_comments${id}`).innerHTML = final_comment;
                 }
             // console.log(final_comment);
             
@@ -316,6 +319,7 @@
         // console.log(id);
         message = document.getElementById(`comment_text${id}`).value
         // console.log(message);
+        console.log(message.length)
         if(message.length<1){
             return
         }
@@ -349,14 +353,16 @@
                             <p class="comment_body" id="comment_lower${response.id}">
                                 ${response.comment}
                             </p>
+                            <button onclick="DeleteComment(${response.id},${id})" style="color:red;"> Delete </button>
                         </div>`
                 all_post = document.getElementById(`all_posts${id}`).innerHTML
                 new_div = document.getElementById(`all_comments${id}`)
                 if(new_div==null){
-                    new_div = `<div id="all_comments${id}"></div>`
+                    new_div = document.createElement('div');
+                    new_div.id = `all_comments${id}`;
+                    document.getElementById(`all_posts${id}`).appendChild(new_div);
+                 
                 }
-                document.getElementById(`all_posts${id}`).innerHTML = all_post + new_div
-                
                 all_comment = document.getElementById(`all_comments${id}`)
    
                 if (all_comment!=null) {
@@ -366,12 +372,34 @@
                     all_comment="";
                     
                 }
-                console.log(comment);
                 new_comment = comment + all_comment ;
                 document.getElementById(`all_comments${id}`).innerHTML = new_comment ;
+                document.getElementById(`comment_text${id}`).value = "";
+                comment_count =document.getElementById(`comment_count_box${id}`).innerHTML 
+                document.getElementById(`comment_count_box${id}`).innerHTML = parseInt(comment_count)+1;
                 
-                document.getElementById(`comment_text${id}`).value = " ";
 
+            }
+        })
+
+    }
+
+    function DeleteComment(comment_id,post_id){
+        console.log(comment_id);
+        console.log(post_id);
+        const URL = `{% url 'post:get-all-comments' 0 %}`.replace("0",comment_id)
+        $.ajax({
+            url : URL,
+            method : "DELETE",
+            headers: {
+                'X-CSRFToken': getCSRFToken(),
+
+            },
+            success :function(response){
+                // console.log(response);
+                getaAllComments(post_id);
+                comment_count =document.getElementById(`comment_count_box${post_id}`).innerHTML 
+                document.getElementById(`comment_count_box${post_id}`).innerHTML = parseInt(comment_count)-1;
             }
         })
 
