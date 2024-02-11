@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
+
 <div class="Create">
     <div class="create_post">
         {% if request.user.profile_picture %}
@@ -165,7 +166,6 @@
 
             },
             success: function (response) {
-                console.log(response);
                 response = response.message;
                 profile_pic = response.profile_pic ;
                 if(profile_pic==null){
@@ -269,21 +269,20 @@
 
 
     function getaAllComments(id){
+        request_user_id = "{{ request.user.id }}"
         const URL = `{% url 'post:get-all-comments' 0 %}`.replace("0",id);
-        console.log("Hello");
         $.ajax({
             url : URL ,
             method : "GET",
             success : function(response){
-                console.log(response);
+                // console.log(response);
                 final_comment = "" ;
                 data = response.data ;
-
                 profile_pic = "{% static 'images/default.png' %}" ;
 
                 for(let x in data){
                     comment = data[x]
-                    // console.log(comment);
+                    // console.log(final_comment);
                     profile_pic = comment.profile_pic ;
                     if(profile_pic==null){
                         profile_pic = "{% static 'images/default.png' %}" ;
@@ -299,14 +298,21 @@
                         <p class="comment_body" id="comment_lower${comment.id}">
                             ${comment.message}
                         </p>
-                        <button onclick="DeleteComment(${comment.id},${id})" style="color:red;"> Delete </button>
-                    </div>
+
+                    
                 `
-                final_comment += allcomments ;
-                }                
+                delete_button = `                        
+                        <button onclick="DeleteComment(${comment.id},${id})" style="color:red;"> Delete </button>`;
+            final_button = `</div>`;
+                if(parseInt(comment.user_id) == parseInt(request_user_id) || parseInt(request_user_id)==parseInt(comment.comment_post_user_id)){
+                    final_comment += allcomments+delete_button+final_button ;
+                }
+                else{
+                    final_comment += allcomments + final_button
+                }
+                }           
                 document.getElementById(`all_comments${id}`).innerHTML = final_comment;
                 }
-            // console.log(final_comment);
             
         })
 
@@ -319,7 +325,6 @@
         // console.log(id);
         message = document.getElementById(`comment_text${id}`).value
         // console.log(message);
-        console.log(message.length)
         if(message.length<1){
             return
         }
@@ -385,8 +390,6 @@
     }
 
     function DeleteComment(comment_id,post_id){
-        console.log(comment_id);
-        console.log(post_id);
         const URL = `{% url 'post:get-all-comments' 0 %}`.replace("0",comment_id)
         $.ajax({
             url : URL,
@@ -396,7 +399,9 @@
 
             },
             success :function(response){
-                // console.log(response);
+                if(response.status != 200){
+                    return 
+                }
                 getaAllComments(post_id);
                 comment_count =document.getElementById(`comment_count_box${post_id}`).innerHTML 
                 document.getElementById(`comment_count_box${post_id}`).innerHTML = parseInt(comment_count)-1;

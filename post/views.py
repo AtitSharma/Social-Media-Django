@@ -6,8 +6,9 @@ from django.http import JsonResponse
 from post.forms import PostCreationForm,CreatePostCommentForm
 import json
 from utils.utility import get_or_not_found
-from post.query import GetAllCommentsQuery,GetAallPostDetailQuery
+from post.query import GetAllCommentsQuery,GetAllPostDetailQuery
 from utils.permissions import LogindInUserView
+
 
 class CreatePostView(LoginRequiredMixin,View):
     def post(self,request,*args,**kwargs):
@@ -82,15 +83,19 @@ class GetAllCommentView(LoginRequiredMixin,View):
         post = get_or_not_found(Post.objects.all(),id=kwargs.get("id"))
         data = Comment.objects.filter(post=post).order_by("-created_at")
         comments = GetAllCommentsQuery(data=data)
+        # print(comments.get_all_data())
         return JsonResponse({"message":"All Comments Retrieved Successfully ","data":comments.get_all_data()})
     
     def delete(self,request,*args,**kwargs):
 
         '''VIEW FOR DELETING COMMENT ON THE BASIS OF COMMENT ID'''
-        
+
         comment = get_or_not_found(Comment.objects.all(),id=kwargs.get("id"))
-        comment.delete()
-        return JsonResponse({"message":"Comment deleted Succcessfully","data":[]})
+        if comment.user == request.user  or comment.user == comment.post.user  or request.user == comment.post.user:
+            comment.delete()
+            return JsonResponse({"message":"Comment deleted Succcessfully","data":[],"status":200})
+        return JsonResponse({"message":"User Donot have permission to perform the action ","status":403,"data":[]})
+
     
 
 class GetAllSharedPostCommentView(LoginRequiredMixin,View):
@@ -107,7 +112,7 @@ class GetPostDetailsView(LogindInUserView):
     def get(self,request,*args,**kwargs):
         post = get_or_not_found(Post.objects.all(),id=kwargs.get("id"))
         post = Post.objects.filter(id=post.id)
-        query = GetAallPostDetailQuery(data=post)
+        query = GetAllPostDetailQuery(data=post)
         context = {
             "posts":query.get_all_data(request)
         }

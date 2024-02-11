@@ -1,22 +1,4 @@
 {% load static %}
-<!-- <form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-
-    {% if form.errors %}
-        <ul>
-            {% for error in form.non_field_errors %}
-                <li>{{ error }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-    <input type="submit" value="Submit">
-</form> -->
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -41,9 +23,9 @@
               <i class="uil uil-envelope-alt"></i>
             </div>
             <div class="input_box">
-              <input type="password" name="password" placeholder="Enter your password" required>
+              <input type="password" name="password" placeholder="Enter your password" id="password" required>
               <i class="uil uil-padlock icon"></i>
-              <i class="uil uil-eye-slash flash"></i>
+              <i class="uil uil-eye-slash flash" onclick="show()" id="eye"></i>
               
             </div>
             <div class="check_box">
@@ -67,3 +49,17 @@
     </div>
   </body>
 </html>
+<script>
+  function show(){
+    if(document.getElementById("eye").className=="uil uil-eye-slash flash"){
+      document.getElementById("eye").className="uil uil-eye flash"
+      document.getElementById("password").type="text"
+      
+    }
+    else{
+      document.getElementById("eye").className="uil uil-eye-slash flash"
+      document.getElementById("password").type="password"
+    }
+    
+  }
+</script>

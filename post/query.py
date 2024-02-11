@@ -10,12 +10,14 @@ class GetAllCommentsQuery(QueryPatterns):
             all_data_in_dict["id"] = data.id
             all_data_in_dict["message"] = data.message
             all_data_in_dict["user"] = data.user.name
+            all_data_in_dict["user_id"] = data.user.id
+            all_data_in_dict["comment_post_user_id"] = data.post.user.id
             all_data_in_dict["profile_pic"] = data.user.profile_picture.url if data.user.profile_picture else None
             all_datas.append(all_data_in_dict)
         return all_datas
     
 
-class GetAallPostDetailQuery(QueryPatterns):
+class GetAllPostDetailQuery(QueryPatterns):
 
     def get_all_data(self,request):
         all_datas =[]

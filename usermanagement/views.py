@@ -23,8 +23,7 @@ class RegisterUserAccount(View):
             user.save()
             # send_email_to_verify_user(user.id)
             return redirect("user:otp-page")
-        errors = [v[0] for v in form.errors.values()]
-        return render(request,"user_register.html",context={"errors":errors})
+        return render(request,"user_register.html")
         
     def get(self,request,*args,**kwargs):
         form = UserRegisterForm()

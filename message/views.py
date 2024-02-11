@@ -31,6 +31,13 @@ class UserMessageView(LogindInUserView):
 
 
 
+class UserSocketMessageView(LogindInUserView):
+
+    def get(self,request,*args,**kwargs):
+        room_name = "hello"
+        return render(request,"chat.html",{"room_name":room_name})
+
+
 
 
 

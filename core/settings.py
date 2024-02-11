@@ -29,6 +29,7 @@ ALLOWED_HOSTS = ["192.168.10.56","*"]
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -167,10 +168,17 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 LOGIN_URL="user:login-user"
 # LOGIN_REDIRECT_URL = "user:login-user"
 # LOGOUT_REDIRECT_URL = "user:logout-use"
+ASGI_APPLICATION = "core.asgi.application"
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
 
 
-
-
-handler404 = 'utils.views.error_404'
-handler403 = 'utils.views.error_403'
-handler500 = 'utils.views.error_500'
+# handler404 = 'utils.views.error_404'
+# handler403 = 'utils.views.error_403'
+# handler500 = 'utils.views.error_500'
