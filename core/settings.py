@@ -146,11 +146,12 @@ MEDIA_URL ="media/"
 
 MEDIA_ROOT = BASE_DIR/"mediafiles/"
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS=[
     BASE_DIR/"staticfiles"
 ]
-
+PROJECT_ROOT = os.path.normpath(os.path.dirname(__file__))
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 
 
 ### EMAIL SETTINGS
@@ -182,3 +183,7 @@ CHANNEL_LAYERS = {
 # handler404 = 'utils.views.error_404'
 # handler403 = 'utils.views.error_403'
 # handler500 = 'utils.views.error_500'
+
+
+# STATIC_URL = '/static/'
+STATIC_ROOT="static/"

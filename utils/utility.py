@@ -19,32 +19,32 @@ def send_email_to_verify_user(id):
 
 
 
-def format_posts_with_image(posts,post_images):
-    images_dict = {}
-    for image in post_images:
-        if image.post_id not in images_dict:
-            images_dict[image.post_id] = []
-        images_dict[image.post_id].append(image.image.url)
-    posts_with_images = []
-    for post in posts:
-        images = images_dict.get(post.id, []) 
-        posts_with_images.append({
-            'post': post,
-            'images': images,
-        })
-    return posts_with_images
+# def format_posts_with_image(posts,post_images):
+#     images_dict = {}
+#     for image in post_images:
+#         if image.post_id not in images_dict:
+#             images_dict[image.post_id] = []
+#         images_dict[image.post_id].append(image.image.url)
+#     posts_with_images = []
+#     for post in posts:
+#         images = images_dict.get(post.id, []) 
+#         posts_with_images.append({
+#             'post': post,
+#             'images': images,
+#         })
+#     return posts_with_images
 
 
-def format_shared_posts_with_image(shared_posts):
-    images = []
-    for shared_post in shared_posts:
-        for post in shared_post.post.all():
-            image = PostImages.objects.filter(post=post).values_list("image",flat=True)
-            images.append({
-                "post":post,
-                "images":image
-            })
-    return images
+# def format_shared_posts_with_image(shared_posts):
+#     images = []
+#     for shared_post in shared_posts:
+#         for post in shared_post.post.all():
+#             image = PostImages.objects.filter(post=post).values_list("image",flat=True)
+#             images.append({
+#                 "post":post,
+#                 "images":image
+#             })
+#     return images
                          
             
 def get_or_not_found(qs, **kwargs):

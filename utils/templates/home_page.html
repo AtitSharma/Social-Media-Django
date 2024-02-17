@@ -303,6 +303,7 @@
                 `
                 delete_button = `                        
                         <button onclick="DeleteComment(${comment.id},${id})" style="color:red;"> Delete </button>`;
+                // delete_button=`<button type="button" class="btn btn-danger" onclick="DeleteComment(${comment.id},${id})">Delete</button>`;
             final_button = `</div>`;
                 if(parseInt(comment.user_id) == parseInt(request_user_id) || parseInt(request_user_id)==parseInt(comment.comment_post_user_id)){
                     final_comment += allcomments+delete_button+final_button ;
